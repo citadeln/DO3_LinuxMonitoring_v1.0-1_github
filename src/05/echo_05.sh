@@ -17,7 +17,8 @@ echo "Log files (with the extension .log) =" $(ls -laR $filic | grep ".log$" | w
 echo "Archive files =" $(ls -laR $filic | grep ".zip$\|.gz$" | wc -l)
 echo "Symbolic links =" $(ls -laR $filic | grep "^l" | wc -l)
 echo "TOP 10 files of maximum size arranged in descending order (path, size and type):"
-du -ah $filic | sort -rh | head -n 3
+find "$filic" -type f -exec du -h {} + | sort -rh | head -n 10 | awk -v filic="$filic" '{cmd = "find \"" $2 "\" | grep -o \".\w*$\""; cmd | getline fileType; close(cmd); printf "%d - %s, %s, %s\n", NR, $2, $1, fileType}'
+
 
 
 #1 - /var/log/one/one.exe, 10 GB, exe  
