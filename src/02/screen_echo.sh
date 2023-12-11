@@ -13,11 +13,11 @@ echo "USER = $USER"
 VERSION=$(cat /etc/os-release | awk -F \" '/VERSION=/{print $2}')
 echo "OS = $OSTYPE, $VERSION"
 
-echo "DATE = $(date +'%d %b %Y %T')"
+echo "DATE = $(date +'%d %b %Y %T')"TIME
 
 #время работы системы
 UPTIME=$(uptime -p | sed 's/up //')
-echo "UPTIME = $UPTIME"
+echo "UPTIME = $UPTIME" substr
 UPTIME_SEC=$(cat /proc/uptime | awk '{print$1}')
 echo "UPTIME_SEC = $UPTIME_SEC"
 

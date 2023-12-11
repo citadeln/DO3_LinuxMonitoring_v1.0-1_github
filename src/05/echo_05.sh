@@ -12,20 +12,14 @@ echo "Total number of files =" $(ls -laR $filic | grep "^-" | wc | awk '{print $
 echo "Number of:  
 Configuration files (with the .conf extension) =" $(ls -laR $filic | grep ".conf$" | wc | awk '{print $1}')
 echo "Text files =" $(ls -laR $filic | grep ".txt$" | wc -l)
-echo "Executable files =" $(ls -laR $filic | grep ".exe$" | wc -l)
+echo "Executable files =" $(find $filic -executable | wc -l)
 echo "Log files (with the extension .log) =" $(ls -laR $filic | grep ".log$" | wc -l)
 echo "Archive files =" $(ls -laR $filic | grep ".zip$\|.gz$" | wc -l)
 echo "Symbolic links =" $(ls -laR $filic | grep "^l" | wc -l)
 echo "TOP 10 files of maximum size arranged in descending order (path, size and type):"
-find "$filic" -type f -exec du -h {} + | sort -rh | head -n 10 | awk -v filic="$filic" '{cmd = "find \"" $2 "\" | grep -o \".\w*$\""; cmd | getline fileType; close(cmd); printf "%d - %s, %s, %s\n", NR, $2, $1, fileType}'
+#find "$filic" -type f -exec du -h {} + | sort -rh | head -n 10 | awk -v filic="$filic" '{cmd = "ls | egrep -o \".\\w*$\" | tr -d \".\""; cmd | getline fileType; close(cmd); printf "%d - %s, %s, %s\n", NR, $2, $1, fileType}'
+find "$filic" -type f -exec du -h {} + | sort -rh | head -n 10 | awk '{cmd = "find \"" $2 "\" | grep -o \".\\w*$\" | tr -d \".\""; cmd | getline fileType; close(cmd); printf "%d - %s, %s, %s\n", NR, $2, $1, fileType}'
+echo "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file):"
+#find $filic -type f -executable -exec ls -lh {} \; | sort -k5 -hr | head -n 10 | awk '{cmd="md5sum"; cmd | getline md5; close(cmd); printf "%d - %s, %s, %s\n", NR, $9, $5, md5}'
 
-
-
-#1 - /var/log/one/one.exe, 10 GB, exe  
-#2 - /var/log/two/two.log, 10 MB, log  
-#etc up to 10"
-# echo "TOP 10 executable files of the maximum size arranged in descending order (path, size and MD5 hash of file)  
-# 1 - /var/log/one/one.exe, 10 GB, 3abb17b66815bc7946cefe727737d295  
-# 2 - /var/log/two/two.exe, 9 MB, 53c8fdfcbb60cf8e1a1ee90601cc8fe2  
-# etc up to 10"
-# echo "Script execution time (in seconds) = 1.5"
+find $filic -type f -executable -exec du -h {} \; | sort -rh | head -n 10 | awk '{cmd="md5sum "; cmd | getline md5; close(cmd); printf "%d - %s, %s, %s\n", NR, $2, $1, md5}'
